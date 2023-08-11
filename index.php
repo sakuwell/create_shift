@@ -1,21 +1,35 @@
 <?php
+writeStaffCsv(7,"櫻井大樹",1,3);
 
-// 書き込むデータの配列
-$data = array(
-    array('John Doe', 'john@example.com'),
-    array('Jane Smith', 'jane@example.com'),
-    array('Bob Johnson', 'bob@example.com')
-);
-
-// 書き込むCSVファイルのパス
-$csvFilePath = 'csv/staff.csv';
-
-// ファイルを開いて書き込む
-$file = fopen($csvFilePath, 'w');
-foreach ($data as $row) {
-    fputcsv($file, $row);
+function writeStaffCsv($id, $name, $sex, $position){
+    $csvFilePath = 'csv/staff.csv';
+    $file = fopen($csvFilePath, 'r');
+    $existId = false;
+    if ($file) {
+        while (($row = fgetcsv($file)) !== false) {
+            if($id == $row[0]) {
+                echo "同じIDが存在します";
+                $existId = true;
+                break;
+            }
+        }
+        if($existId == false){
+            $file = fopen($csvFilePath, 'a');
+            $data = array($id, $name, $sex, $position);
+            fputcsv($file, $data);
+            echo "新規登録が完了しました";
+        }
+        fclose($file);
+    } else {
+        echo "ファイルを開けませんでした。";
+    }
 }
-fclose($file);
-
-echo "CSVファイルに書き込みが完了しました。";
 ?>
+
+
+
+
+
+
+
+    
