@@ -1,7 +1,7 @@
 <?php
 
 // スタッフデータ新規登録
-function writeStaffCsv($id, $name, $sex, $position){
+function registerNewStaff($id, $name, $sex, $position){
     $csvFilePath = 'csv/staff.csv';
     $file = fopen($csvFilePath, 'r');
     $existId = false;
@@ -27,7 +27,7 @@ function writeStaffCsv($id, $name, $sex, $position){
 }
 
 // スタッフデータ一覧読み込み
-function allStaffCsv(){
+function readAllStaffData(){
     $csvFilePath = 'csv/staff.csv';
     $file = fopen($csvFilePath, 'r');
     $staffData = [];
@@ -44,8 +44,8 @@ function allStaffCsv(){
     }
 }
 
-//1件のデータ呼び出し
-function targetStaffCsv($id){
+//1件のスタッフデータ呼び出し
+function readTargetStaffData($id){
     // CSVファイルのパス
     $csvFilePath = 'csv/staff.csv';
 
@@ -75,8 +75,56 @@ function targetStaffCsv($id){
 
 }
 
+// スタッフデータの編集
+function editStaffData($newData){
+    // CSVファイルのパス
+    $csvFilePath = 'csv/staff.csv';
 
+    // ファイルを読み込みモードで開く
+    $file = fopen($csvFilePath, 'r');
+    if ($file) {
+        $rows = array();
+        while (($row = fgetcsv($file)) !== false) {
+            $rows[] = $row;
+        }
+        fclose($file);
 
+        // IDを基に行を探して編集
+        $found = false;
+        foreach ($rows as $row) {
+            if ($row[0] == $newData[0]) { // 仮定: IDは行の最初の列にあるとする
+                $row = $newData;
+                $found = true;
+                break;
+            }
+        }
+        // var_dump($rows);
+
+        if ($found) {
+            // ファイルを書き込みモードで開いてデータを書き込む
+            $file = fopen($csvFilePath, 'w');
+            foreach ($rows as $row) {
+                fputcsv($file, $row);
+                // var_dump ($row);
+            }
+            fclose($file);
+
+            echo "ID $newData[0] の情報を編集しました。";
+        } else {
+            echo "指定したIDが見つかりませんでした。";
+        }
+    } else {
+        echo "ファイルを開けませんでした。";
+    }
+}
+
+// スタッフデータの削除
+function deleteStaffData($id){
+
+}
+
+$editData = ["5","櫻井幸助","1","4"];
+editStaffData($editData);
 
 // $s[] = targetStaffCsv(2);
 // foreach($s as $data){
